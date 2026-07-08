@@ -1,4 +1,5 @@
-import { createFileRoute, useNavigate, useServerFn } from "@tanstack/react-router";
+import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { useServerFn } from "@tanstack/react-start";
 import { useEffect, useState } from "react";
 import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
@@ -31,7 +32,7 @@ function CallbackPage() {
       return;
     }
     doVerify({ data: { reference: ref } })
-      .then((r) => {
+      .then((r: any) => {
         const target = r.order_number || search.order;
         if (target) {
           navigate({ to: "/order/$orderNumber", params: { orderNumber: target }, replace: true });
@@ -39,7 +40,7 @@ function CallbackPage() {
           setMsg("Payment verified. You can track your order from the Track page.");
         }
       })
-      .catch((e) => setMsg(e?.message ?? "Verification failed. Contact support with your reference."));
+      .catch((e: any) => setMsg(e?.message ?? "Verification failed. Contact support with your reference."));
   }, [search, doVerify, navigate]);
 
   return (
