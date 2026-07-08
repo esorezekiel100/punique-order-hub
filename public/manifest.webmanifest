@@ -1,0 +1,12 @@
+{
+  "name": "PUNIQUE KITCHEN",
+  "short_name": "PUNIQUE",
+  "description": "Order food from PUNIQUE KITCHEN Yenagoa",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#FFF9F0",
+  "theme_color": "#E67E22",
+  "icons": [
+    { "src": "/favicon.ico", "sizes": "any", "type": "image/x-icon" }
+  ]
+}
