@@ -31,7 +31,7 @@ function AdminDashboard() {
               <CartesianGrid strokeDasharray="3 3" opacity={0.3} />
               <XAxis dataKey="date" tickFormatter={(d) => d.slice(5)} fontSize={11} />
               <YAxis fontSize={11} tickFormatter={(v: number) => `₦${(v / 1000).toFixed(0)}k`} />
-              <Tooltip formatter={(v: number) => formatNaira(v)} />
+              <Tooltip formatter={(v: any) => formatNaira(Number(v))} />
               <Line type="monotone" dataKey="revenue" stroke="var(--primary)" strokeWidth={2} dot={false} />
             </LineChart>
           </ResponsiveContainer>
