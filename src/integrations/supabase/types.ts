@@ -303,6 +303,23 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      create_order: {
+        Args: {
+          p_address: string
+          p_area: string
+          p_customer_name: string
+          p_delivery_type: Database["public"]["Enums"]["delivery_type"]
+          p_email: string
+          p_items: Json
+          p_notes: string
+          p_phone: string
+        }
+        Returns: {
+          id: string
+          order_number: string
+          total: number
+        }[]
+      }
       has_role: {
         Args: {
           _role: Database["public"]["Enums"]["app_role"]
