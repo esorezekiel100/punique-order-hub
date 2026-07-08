@@ -39,11 +39,11 @@ export const placeOrder = createServerFn({ method: "POST" })
     const { data: rows, error } = await supabase.rpc("create_order", {
       p_customer_name: data.customer_name,
       p_phone: data.phone,
-      p_email: data.email || null,
+      p_email: data.email || (null as unknown as string),
       p_delivery_type: data.delivery_type,
-      p_address: data.address || null,
-      p_area: data.area || null,
-      p_notes: data.notes || null,
+      p_address: data.address || (null as unknown as string),
+      p_area: data.area || (null as unknown as string),
+      p_notes: data.notes || (null as unknown as string),
       p_items: data.items,
     });
     if (error) throw new Error(error.message);
@@ -109,7 +109,7 @@ export const adminListOrders = createServerFn({ method: "GET" })
   )
   .handler(async ({ context, data }) => {
     await assertAdmin(context);
-    let q = context.supabase
+    let q: any = context.supabase
       .from("orders")
       .select("*")
       .order("created_at", { ascending: false })
