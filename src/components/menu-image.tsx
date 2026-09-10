@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
-import { UtensilsCrossed } from "lucide-react";
+import { getDishImage } from "@/lib/dish-images";
 
 interface Props {
   src: string | null | undefined;
@@ -9,20 +9,34 @@ interface Props {
 }
 
 export function MenuImage({ src, alt, className }: Props) {
-  const [url, setUrl] = useState<string | null>(null);
+  const fallback = getDishImage(alt);
+  const [url, setUrl] = useState(src?.startsWith("http") ? src : src ? null : fallback);
+  const [loaded, setLoaded] = useState(false);
+
   useEffect(() => {
-    if (!src) { setUrl(null); return; }
+    setLoaded(false);
+    if (!src) { setUrl(fallback); return; }
     if (src.startsWith("http")) { setUrl(src); return; }
     supabase.storage.from("menu-images").createSignedUrl(src, 60 * 60 * 24 * 7)
-      .then(({ data }) => setUrl(data?.signedUrl ?? null));
-  }, [src]);
+      .then(({ data }) => setUrl(data?.signedUrl ?? fallback))
+      .catch(() => setUrl(fallback));
+  }, [fallback, src]);
 
-  if (!url) {
-    return (
-      <div className={`flex items-center justify-center bg-gradient-warm text-primary-foreground/70 ${className ?? ""}`}>
-        <UtensilsCrossed className="h-10 w-10 opacity-60" />
-      </div>
-    );
-  }
-  return <img src={url} alt={alt} loading="lazy" className={className} />;
+  return (
+    <div className={`relative overflow-hidden bg-muted ${className ?? ""}`}>
+      {!loaded && <div className="absolute inset-0 animate-image-shimmer bg-gradient-warm opacity-30" />}
+      <img
+        src={url ?? fallback}
+        alt={alt}
+        loading="lazy"
+        width={944}
+        height={704}
+        onLoad={() => setLoaded(true)}
+        onError={(event) => {
+          if (event.currentTarget.src !== fallback) event.currentTarget.src = fallback;
+        }}
+        className={`h-full w-full object-cover transition-[opacity,transform] duration-700 ${loaded ? "opacity-100" : "opacity-0"}`}
+      />
+    </div>
+  );
 }

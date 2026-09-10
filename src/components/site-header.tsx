@@ -1,5 +1,6 @@
 import { Link, useRouterState } from "@tanstack/react-router";
-import { Menu as MenuIcon, User } from "lucide-react";
+import { AnimatePresence, motion } from "framer-motion";
+import { Menu as MenuIcon, User, X } from "lucide-react";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { CartDrawer } from "@/components/cart-drawer";
@@ -51,17 +52,24 @@ export function SiteHeader() {
               <Link to="/auth">Sign in</Link>
             </Button>
           )}
-          <button
+          <Button
+            variant="outline"
+            size="icon"
             className="ml-1 grid h-9 w-9 place-items-center rounded-md border border-border md:hidden"
             onClick={() => setOpen((v) => !v)}
-            aria-label="Menu"
+            aria-label={open ? "Close menu" : "Open menu"}
           >
-            <MenuIcon className="h-4 w-4" />
-          </button>
+            <AnimatePresence mode="wait" initial={false}>
+              <motion.span key={open ? "close" : "menu"} initial={{ opacity: 0, rotate: -45, scale: 0.7 }} animate={{ opacity: 1, rotate: 0, scale: 1 }} exit={{ opacity: 0, rotate: 45, scale: 0.7 }} transition={{ duration: 0.18 }}>
+                {open ? <X className="h-4 w-4" /> : <MenuIcon className="h-4 w-4" />}
+              </motion.span>
+            </AnimatePresence>
+          </Button>
         </div>
       </div>
-      {open && (
-        <div className="border-t border-border bg-background md:hidden">
+      <AnimatePresence>
+        {open && (
+        <motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: "auto", opacity: 1 }} exit={{ height: 0, opacity: 0 }} transition={{ duration: 0.25 }} className="overflow-hidden border-t border-border bg-background md:hidden">
           <nav className="flex flex-col p-2">
             {NAV.map((n) => (
               <Link key={n.to} to={n.to} onClick={() => setOpen(false)} className="rounded-md px-3 py-2 text-sm hover:bg-muted">
@@ -72,8 +80,9 @@ export function SiteHeader() {
               <Link to="/admin" onClick={() => setOpen(false)} className="rounded-md px-3 py-2 text-sm text-forest hover:bg-muted">Admin</Link>
             )}
           </nav>
-        </div>
-      )}
+        </motion.div>
+        )}
+      </AnimatePresence>
     </header>
   );
 }
